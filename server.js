@@ -2,7 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
+const db = require("./app/models");
 
+db.sequelize.sync({force: true}).then(()=> {
+  console.log("Drop and re-sync db.");
+});
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
 
