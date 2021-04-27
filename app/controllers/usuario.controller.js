@@ -1,5 +1,5 @@
 const db = require("../models");
-const tutorial = db.tutorials;
+const usuario = db.usuarios;
 const Op = db.Sequelize.Op;
 
 //Crear y guarda un nuevo tutorial
@@ -12,14 +12,13 @@ exports.create = (req, res) =>{
         return;
     }
     //Crear un tutorial
-    const tutorial = {
-        tiitle: req.body.title,
-        description: req.body.description,
-        published: req.body.published? req.body.published : this.findAllPublished
+    const usuario = {
+        tiitle: req.body.usuarioEmail,
+        description: req.body.usuarioPassword
     };
 
     //Guarda el tutorial en la base de datos
-    tutorial.create(tutorial)
+    usuario.create(usuario)
     .then(data => {
         res.send(data);
     })
@@ -33,7 +32,7 @@ exports.create = (req, res) =>{
 
 //Mostrar todos los tutoriales de la DB
 exports.findAll = (req, res) =>{
-    const title = req.body.title;
+    const email = req.body.usuarioEmail;
     var condition = tile?{title: {[Op.like]: `%${title}%`}} : null;
 
     tutorial.findAll({where : condition})
@@ -53,7 +52,7 @@ exports.findAll = (req, res) =>{
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    tutorial.findbyPk(id)
+    usuario.findbyPk(id)
     .then(data =>{
         res.send(data);
     })
@@ -69,7 +68,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    tutorial.update(req.body, {
+    usuario.update(req.body, {
         where: { id: id }
       })
         .then(num => {
@@ -91,11 +90,11 @@ exports.update = (req, res) => {
 
 };
 
-//Borrar tutorial ppor ID
+//Borrar tutorial por ID
 exports.delete = (req,res) =>{
     const id = req.params.id;
 
-  tutorial.destroy({
+  usuario.destroy({
     where: { id: id }
   })
     .then(num => {
@@ -119,7 +118,7 @@ exports.delete = (req,res) =>{
 
 //Borrar todos los tutoriales de a DB
 exports.deleteAll = (req,res) =>{
-    tutorial.destroy({
+    usuario.destroy({
         where: {},
         truncate: false
       })
@@ -133,18 +132,4 @@ exports.deleteAll = (req,res) =>{
           });
         });
 
-};
-
-//Buscar todos los publicados
-exports.findAllPublished = (req,res) =>{
-    tutorial.findAll({ where: { published: true } })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
-      });
-    });
 };
